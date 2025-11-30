@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>DEMANDIQ - Advanced Forecasting</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+    <script src="{{ url_for('static', filename='js/chart.js') }}"></script>
+
+  </head>
+  <body>
+    <header>
+      <h1>DEMANDIQ</h1>
+      <p>Advanced Store & Department Sales Forecasting (Prophet / XGBoost )</p>
+    </header>
+
+    <main>
+      <section class="controls">
+        <div class="field">
+          <label>Store ID</label>
+          <input id="storeInput" placeholder="e.g. 1" />
+        </div>
+
+        <div class="field">
+          <label>Dept ID</label>
+          <input id="deptInput" placeholder="e.g. 1" />
+        </div>
+
+        <div class="field">
+          <label>Past weeks</label>
+          <input id="pastWeeks" type="number" value="52" />
+        </div>
+
+        <div class="field">
+          <label>Future weeks</label>
+          <input id="futureWeeks" type="number" value="12" />
+        </div>
+
+        <div class="field">
+          <label>Current Stock</label>
+          <input id="currentStock" type="number" value="800" />
+        </div>
+
+        <div class="field">
+          <label>Safety %</label>
+          <input id="safetyPercent" type="number" value="10" />
+        </div>
+
+        <div class="field">
+          <label>Model</label>
+          <select id="modelSelect">
+            <option value="prophet">Prophet</option>
+            <option value="xgb">XGBoost</option>
+            
+          </select>
+        </div>
+
+        <button id="btnRun">Run</button>
+      </section>
+
+      <section class="chart-section">
+        <h2>Past Weekly Sales</h2>
+        <canvas id="historyChart" width="1200" height="450"></canvas>
+      </section>
+
+      <section class="chart-section">
+        <h2>Forecast & Required Stock</h2>
+        <canvas id="forecastChart" width="1200" height="450"></canvas>
+      </section>
+
+      <section class="table-section">
+        <h2>Week-by-Week Stock Plan</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Week</th>
+              <th>Date</th>
+              <th>Forecast</th>
+              <th>Safety</th>
+              <th>Required</th>
+              <th>Order Qty</th>
+            </tr>
+          </thead>
+          <tbody id="stockTableBody"></tbody>
+        </table>
+        <p id="stockSummary" class="stock-summary"></p>
+      </section>
+    </main>
+
+    <footer>
+      <p>Final Year Project — DEMANDIQ (Advanced Version)</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <a href="/logout" style="float:right;color:white;">Logout</a>
+
+  </body>
+</html>
