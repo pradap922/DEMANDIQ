@@ -1,0 +1,82 @@
+DEMANDIQ: Project Documentation Topics & Diagrams
+=================================================
+
+1. DOCUMENT TOPICS (For Project Report or Presentation)
+-------------------------------------------------------
+1. **Introduction & Objectives**: Purpose of the Demand Forecasting & Inventory Management platform.
+2. **System Architecture & Technologies**: Integration of Flask backend, HTML/JS frontend, and Python-based machine learning.
+3. **Data Pipeline & Preprocessing**: Handling CSV data ingestion, missing values, and weekly aggregation.
+4. **Demand Forecasting Machine Learning**: Implementation logic of Meta Prophet and XGBoost models.
+5. **Inventory Optimization Logic**: Math behind computing safety stock parameters and auto-calculating re-order quantities.
+6. **RAG-Powered AI Assistant**: How the lightweight RAG (Retrieval-Augmented Generation) chat processes documents and queries.
+7. **Security & Authentication**: Admin session control, login workflows, and route protection.
+8. **REST APIs & Backend Endpoints**: Explanation of the JSON structure for endpoints (/api/history, /api/forecast, etc).
+9. **Dashboard UI & Data Visualization**: Approach to rendering dynamic interactive charts and KPIs using JavaScript/ChartJS.
+10. **Future Enhancements**: Scope for scaling up the app with a real SQL/NoSQL database and user roles.
+
+
+2. ENTITY-RELATIONSHIP (ER) DIAGRAM (Conceptual)
+-------------------------------------------------------
+While DemandIQ leverages CSV datasets (via Pandas) rather than an explicit relational database (like MySQL/PostgreSQL), the logical data schema can be mapped as follows:
+
+[ Entities & Attributes ]
+
+1. USER
+   - Username (PK)
+   - Password
+   - Role (e.g., Admin)
+
+2. STORE
+   - Store_ID (PK)
+
+3. DEPARTMENT
+   - Dept_ID (PK)
+   - Store_ID (FK)
+
+4. SALES_HISTORY (Time-Series Metrics)
+   - Record_ID (PK)
+   - Store_ID (FK)
+   - Dept_ID (FK)
+   - Date (ds)
+   - Weekly_Sales (y)
+   - IsHoliday (Boolean)
+
+5. FORECAST_PROJECTION
+   - Projection_ID (PK)
+   - Store_ID (FK)
+   - Dept_ID (FK)
+   - Date (ds)
+   - Predicted_Sales (yhat)
+   - Safety_Stock
+   - Order_Quantity
+
+[ Relationships ]
+- One STORE contains Many DEPARTMENTs (1:N)
+- One DEPARTMENT tracks Many SALES_HISTORY records over time (1:N)
+- One DEPARTMENT generates Many FORECAST_PROJECTION records (1:N)
+
+
+3. DATA FLOW DIAGRAM (DFD)
+-------------------------------------------------------
+### Level 0 (Context Diagram)
+- [ Admin User ] <=====(Dashboard UI / Charts / API JSON)=====> ( DEMANDIQ SYSTEM )
+- Flow In: Login Credentials, Store/Dept selections, Forecast duration (weeks), Chat queries.
+- Flow Out: Authentication Status, Sales History Points, Future Forecast Metrics, Order Quantities, AI text responses.
+
+### Level 1 (Process Breakdown)
++-----------------------------------+
+| External Entities: User, LLM API  |
++-----------------------------------+
+[ User ] -> submits credentials -> (Process 1: Authentication) -> [ Data Store: Session ]
+
+[ User ] -> requests options -> (Process 2: Data Loader) <- reads from -> [ Data Store: CSV Files (Raw Data) ]
+                            -> generates cleaned data views
+
+[ User ] -> asks for forecast -> (Process 3: Forecasting Engine) <- gets cleaned data
+                            -> runs Prophet / XGBoost algorithms
+                            -> computes Safety Stock & Needed Orders
+                            -> outputs JSON data -> [ Dashboard UI ]
+
+[ User ] -> types chat message -> (Process 4: RAG Assistant) <- reads from -> [ Data Store: Knowledge Base Docs ]
+                             -> sends context to LLM
+                             -> outputs AI reply -> [ Dashboard UI ]
