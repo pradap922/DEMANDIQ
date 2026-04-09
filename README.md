@@ -50,8 +50,6 @@ Prophet — fast & reliable
 
 XGBoost — advanced ML model
 
-➡️ LSTM removed to ensure full offline compatibility in college lab environments.
-
 📊 Chart Engine (Offline)
 
 No CDN, no internet — real canvas rendering:
